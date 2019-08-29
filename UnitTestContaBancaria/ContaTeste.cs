@@ -19,5 +19,26 @@ namespace UnitTestContaBancaria
             double saldoReal = conta.getSaldo();
             Assert.AreEqual(saldoEsperado, saldoReal, 0.001, "Debito realizado de modo incorreto");
         }
+
+        [TestMethod]
+        public void DebitoMaiorQueSaldo()
+        {
+            double saldoInicial = 0;
+            double valorDebito = 0.01;
+
+            Conta conta = new Conta("Jão", saldoInicial);
+
+            try
+            {
+                conta.Debito(valorDebito);
+            }
+            catch (System.ArgumentOutOfRangeException ae)
+            {
+                StringAssert.Contains(ae.Message, Conta.ValorDebitoMaiorQueSaldo);
+                return;
+            }
+
+            Assert.Fail("A exceção esperada não foi lançada");
+        }
     }
 }

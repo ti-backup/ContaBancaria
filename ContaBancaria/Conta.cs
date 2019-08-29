@@ -8,6 +8,13 @@ namespace ContaBancaria
 {
     public class Conta
     {
+        public const string ValorDebitoMaiorQueSaldo = 
+            "Não é possível debitar um valor maior que o saldo";
+        public const string ValorDebitoMenorQueZero =
+            "Não é possível debitar um valor negativo";
+        public const string ValorDebitoIgualZero =
+            "Não é possível debitar o valor zero";
+
         string nome;
         double saldo;
 
@@ -22,8 +29,13 @@ namespace ContaBancaria
 
         public void Debito(double valor)
         {
-            if (valor > this.saldo || valor < 0)
-                return;
+            if (valor > this.saldo)
+                throw new ArgumentOutOfRangeException("valor", valor, ValorDebitoMaiorQueSaldo);
+            if (valor < 0)
+                throw new ArgumentOutOfRangeException("valor", valor, ValorDebitoMenorQueZero);
+            if (valor == 0)
+                throw new ArgumentOutOfRangeException("valor", valor, ValorDebitoIgualZero);
+
             this.saldo -= valor;
         }
 
