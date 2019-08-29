@@ -32,6 +32,7 @@ namespace ContaBancaria
                 nudSaldo.Value.ToString()
             };
             dgvContas.Rows.Add(linha);
+            ResetCampos();
         }
 
         private void btnCreditar_Click(object sender, EventArgs e)
@@ -47,13 +48,34 @@ namespace ContaBancaria
 
         private void btnDebitar_Click(object sender, EventArgs e)
         {
-            DataGridViewRow l = dgvContas.SelectedRows[0];
-            string nome = l.Cells[0].Value.ToString();
-            double saldo = Convert.ToDouble(l.Cells[1].Value);
+            string nome;
+            double saldo;
+            foreach (DataGridViewRow l in dgvContas.SelectedRows) {
+                nome = l.Cells[0].Value.ToString();
+                saldo = Convert.ToDouble(l.Cells[1].Value);
 
-            Conta cc = new Conta(nome, saldo);
-            cc.Debito(Convert.ToDouble(nudValor.Value));
-            l.Cells[1].Value = cc.getSaldo();
+                Conta cc = new Conta(nome, saldo);
+                try
+                {
+                    cc.Debito(Convert.ToDouble(nudValor.Value));
+                    l.Cells[1].Value = cc.getSaldo();
+                }
+                catch (ArgumentOutOfRangeException ae)
+                {
+                    MessageBox.Show(
+                        "Erro: " + ae.Message,
+                        "Operação de Débito na conta " + nome,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void ResetCampos()
+        {
+            txtNome.Clear();
+            nudSaldo.Value = 0;
+            txtNome.Focus();
         }
     }
 }
